@@ -18,9 +18,11 @@
     {% endif %}
   </div>
   <h2 class="mt-4">Tareas</h2>
-
-  <a href="{% url 'task_create' project_id=project.id %}" class="btn btn-primary mt-2 mb-3">Nueva Tarea</a>
-
+  {% if project.owner != request.user %}
+  <a href="{% url 'task_create' project_id=project.id %}" class="btn btn-primary mt-2 mb-3 disabled">Nueva Tarea</a>
+  {% else %}
+  <a href="{% url 'task_create' project_id=project.id %}" class="btn btn-primary mt-2 mb-3 disabled">Nueva Tarea</a>
+  {% endif %}
   <div class="d-block btn-group mb-3" role="group">
     <a class="btn btn-outline-secondary
        {% if selected_status == 'pending' %}active{% endif %}"
