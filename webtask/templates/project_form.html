@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mt-3">
+  <h1>{% if object %}Editar{% else %}Crear{% endif %} Proyecto</h1>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success mt-2">
+      {% if object %}Actualizar{% else %}Crear{% endif %}
+    </button>
+  </form>
+</div>
+{% endblock %}

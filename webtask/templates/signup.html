@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+<main class="form-auth w-50 m-auto">
+    <!-- INICIO: SIGN IN PASSWORD FORM -->
+    <form method="post">
+        <h1 class="h3 mb-3 text-center">{% translate "Signup" %}</h1>
+        {% csrf_token %}
+        <div class="mb-2">{{ form.username|as_crispy_field }}</div>
+        <div class="mb-2">{{ form.email|as_crispy_field }}</div>
+        <div class="mb-2">{{ form.password|as_crispy_field }}</div>
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <button class="mt-4 btn btn-primary w-100 py-2" type="submit">{% translate "Signup" %}</button>
+        {% comment %} <div class="my-3 text-center">
+            <a class="btn btn-secondary w-100 py-2"
+               href="{% url 'recovery_password' %}">{% trans "Recover password" %}</a>
+        </div> {% endcomment %}
+    </form>
+    <!-- FIN: SIGN IN PASSWORD FORM -->
+</main>
+{% endblock %}

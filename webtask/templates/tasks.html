@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mt-4">
+  <div class="">
+    <h1>{{ project.name }}</h1>
+    <p>{{ project.description }}</p>
+    <div>
+  {% comment %} <h2>{{ project.name }}</h2> {% endcomment %}
+  <div class"mb-3">
+    {% if project.owner != request.user %}
+
+    <a href="{% url 'project_edit' project.pk %}" class="btn btn-sm btn-warning disabled">Editar</a>
+    <a href="{% url 'project_delete' project.pk %}" class="btn btn-sm btn-danger disabled">Eliminar</a>
+    {% else %}
+    <a href="{% url 'project_edit' project.pk %}" class="btn btn-sm btn-warning">Editar</a>
+    <a href="{% url 'project_delete' project.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+    {% endif %}
+  </div>
+  <h2 class="mt-4">Tareas</h2>
+
+  <a href="{% url 'task_create' project_id=project.id %}" class="btn btn-primary mt-2 mb-3">Nueva Tarea</a>
+
+  <div class="d-block btn-group mb-3" role="group">
+    <a class="btn btn-outline-secondary
+       {% if selected_status == 'pending' %}active{% endif %}"
+       href="?status=pending">Pendientes</a>
+  
+    <a class="btn btn-outline-secondary
+       {% if selected_status == 'in_progress' %}active{% endif %}"
+       href="?status=in_progress">En Progreso</a>
+  
+    <a class="btn btn-outline-secondary
+       {% if selected_status == 'completed' %}active{% endif %}"
+       href="?status=completed">Completadas</a>
+  
+    <a class="btn btn-outline-secondary
+       {% if not selected_status %}active{% endif %}"
+       href="?">Todas</a>
+  </div>
+  
+  {% if tasks %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Estado</th>
+          <th>cambiar estado</th>
+          <th>Vencimiento</th>
+          <th>Asignado a</th>
+          <th>eliminar</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for task in tasks %}
+      {% if project.owner != request.user %}
+      <tr>
+        <td>
+          <a href="{% url 'task_detail' project_id=project.id pk=task.id %}">
+            {{ task.title }}
+            </a>
+            <em>asignada a {{ task.assigned_to.username }}</em>
+        </td>
+        <td>{{ task.get_status_display }}</td>
+        <td>            
+          <a href="{% url 'task_change_status' project_id=project.id pk=task.id new_status='pending' %}" 
+              class="btn btn-secondary btn-sm" title="Pendiente">
+            P
+          </a>
+          <a href="{% url 'task_change_status' project_id=project.id pk=task.id new_status='in_progress' %}"
+             class="btn btn-info btn-sm" title="En Progreso">
+            EP
+          </a>
+          <a href="{% url 'task_change_status' project_id=project.id pk=task.id new_status='completed' %}"
+             class="btn btn-success btn-sm" title="Completada">
+            C
+          </a>
+        
+      </td>
+        <td>{{ task.due_date|date:"d/m/Y" }}</td>
+        <td>{{ task.assigned_to.username|default:"No asignado" }}</td>
+        <td>
+          <a href="{% url 'task_delete' project_id=project.id pk=task.id %}" class="btn btn-sm btn-danger disabled">Eliminar</a>
+        </td>
+      </tr>
+      {% else %}
+        <tr>
+          <td>
+            <a href="{% url 'task_detail' project_id=project.id pk=task.id %}">
+            {{ task.title }}
+            </a>
+          </td>
+          <td>{{ task.get_status_display }}</td>
+          <td>            
+              <a href="{% url 'task_change_status' project_id=project.id pk=task.id new_status='pending' %}" 
+                  class="btn btn-secondary btn-sm" title="Pendiente">
+                P
+              </a>
+              <a href="{% url 'task_change_status' project_id=project.id pk=task.id new_status='in_progress' %}"
+                 class="btn btn-info btn-sm" title="En Progreso">
+                EP
+              </a>
+              <a href="{% url 'task_change_status' project_id=project.id pk=task.id new_status='completed' %}"
+                 class="btn btn-success btn-sm" title="Completada">
+                C
+              </a>
+            
+          </td>
+          <td>{{ task.due_date|date:"d/m/Y" }}</td>
+          <td>{{ task.assigned_to.username|default:"No asignado" }}</td>
+          <td>
+            <a href="{% url 'task_delete' project_id=project.id pk=task.id %}" class="btn btn-sm btn-danger">Eliminar</a>    
+          </td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No hay tareas registradas.</p>
+  {% endif %}
+</div>
+{% endblock %}
